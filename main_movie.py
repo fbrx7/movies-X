@@ -5,31 +5,45 @@ from termcolor import cprint, colored
 
 class Main:
 
+	list_name = []
+	list_link = []
 
 	# cimaleak_url = 'https://cimalek.to/?s'
 
 	def __init__(self):
 
 		self.X = input(colored('Set Name Of Movie: ', 'green')).replace(' ','+')
-
 		self.request = requests.get(f'https://cimalek.to/?s={self.X}')
-
 		self.soup = BeautifulSoup(self.request.content, 'lxml')
-
 		self.data = self.soup.find_all('div', {'class':'item'})
-	
-		self.list = []
 
 	def analysis_data(self):
 
 		for i in range(len(self.data)):
 
 			self.title_movie = self.data[i].find('div', {'class':'title'}).text.strip()
-			self.list.append(self.title_movie)
-
+			for link in self.data[i].find_all('a'):
+				self.href = link.attrs['href']
+			Main.list_name.append(self.title_movie)
+			Main.list_link.append(self.href)
 			print ('['+colored(i,'red')+']'+colored(self.title_movie,'magenta'))
 
-Main().analysis_data()
+
+	@classmethod
+	def loop(cls):
+		if Main.list_name != 0:
+			while True:
+				user_input = input(colored('Set Your Movie NUM: ', 'green'))
+				print (Main.list_link[int(user_input)])
+
+
+
+if __name__ == '__main__':
+
+	op1 = Main()
+	op1.analysis_data()
+	op1.loop()
+	
 
 
 
